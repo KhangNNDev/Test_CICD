@@ -1,0 +1,28 @@
+# Stage 1: Build application
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /source
+
+# Copy project files
+COPY *.sln .
+COPY Api/Api.csproj ./Api/
+COPY DataAccess/DataAccess.csproj ./DataAccess/
+COPY Services/Services.csproj ./Services/
+RUN dotnet restore
+
+# Cleanup unwanted files
+RUN find /source -name "*.csproj" -exec sed -i '/Compile/d' {} \;
+
+# Copy all source code
+COPY Api/. ./Api/
+COPY DataAccess/. ./DataAccess/h
+COPY Services/. ./Services/
+RUN dotnet publish -c Debug -o /app --no-restore
+
+# Stage 2: Create runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app ./
+EXPOSE 5253
+ENV ASPNETCORE_URLS=http://*:5253
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "Api.dll"]
