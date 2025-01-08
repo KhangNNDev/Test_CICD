@@ -40,7 +40,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: khanganonymous/${{ DOCKER_NAME }}:latest
+          tags: khanganonymous/${{ env.DOCKER_NAME }}:latest
           file: ./${{ env.DOCKERFILE }}
 
       - name: Deploy on VPS
@@ -52,7 +52,7 @@ jobs:
           port: 22
           timeout: 300s
           script: |
-            docker pull khanganonymous/${{ DOCKER_NAME }}:latest
-            docker stop ${{ DOCKER_NAME }} || true
-            docker rm ${{ DOCKER_NAME }} || true
-            docker run -d -p ${{ env.PORT }}:${{ env.PORT }} --name ${{ DOCKER_NAME }} khanganonymous/${{ DOCKER_NAME }}:latest
+            docker pull khanganonymous/${{ env.DOCKER_NAME }}:latest
+            docker stop ${{ env.DOCKER_NAME }} || true
+            docker rm ${{ env.DOCKER_NAME }} || true
+            docker run -d -p ${{ env.PORT }}:${{ env.PORT }} --name ${{ env.DOCKER_NAME }} khanganonymous/${{ env.DOCKER_NAME }}:latest
