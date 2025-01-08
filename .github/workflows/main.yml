@@ -30,9 +30,9 @@ jobs:
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: 112.213.91.196
-          username: root
-          password: CapstoneSU24
+          host: ${{ VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ VPS_PASSWORD }}
           port: 22
           timeout: 300s
           script: |
