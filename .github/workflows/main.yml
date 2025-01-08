@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t khanganonymous/cicd_development:latest -f ../../../Dockerfile_Development .
+          docker build -t khanganonymous/cicd_development:latest -f ../../Dockerfile_Development .
           docker push khanganonymous/cicd_development:latest
 
       - name: Deploy on VPS
