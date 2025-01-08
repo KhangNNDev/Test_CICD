@@ -30,9 +30,9 @@ jobs:
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
+          host: 112.213.91.196
+          username: root
+          password: CapstoneSU24
           port: 22
           script: |
             docker pull khanganonymous/cicd_development:latest
