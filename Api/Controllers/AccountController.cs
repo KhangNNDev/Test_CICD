@@ -23,5 +23,11 @@ namespace Api.Controllers
         {
             return Ok("Hello World");
         }   
+        [HttpGet]
+        [Route("/test-ci-cd")]
+        public IActionResult TestCICD()
+        {
+            return Ok("TestCICD");
+        } 
     }
 }
