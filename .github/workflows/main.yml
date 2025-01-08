@@ -25,7 +25,7 @@ jobs:
           docker push khanganonymous/cicd_development:latest
 
       - name: Deploy on VPS
-        uses: appleboy/ssh-action@v0.1.12
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
