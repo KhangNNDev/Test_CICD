@@ -34,7 +34,7 @@ jobs:
           username: root
           password: CapstoneSU24
           port: 22
-          timeout-second: 300
+          timeout: 300s
           script: |
             docker pull khanganonymous/cicd_development:latest
             docker stop cicd_development || true
