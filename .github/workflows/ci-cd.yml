@@ -20,13 +20,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
+      - name: Determine Dockerfile
+        id: dockerfile
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            echo "Using Dockerfile_Production"
+            echo "DOCKERFILE=Dockerfile_Production" >> $GITHUB_ENV
+          else
+            echo "Using Dockerfile_Development"
+            echo "DOCKERFILE=Dockerfile_Development" >> $GITHUB_ENV
+          fi
+      
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: khanganonymous/cicd_development:latest
-          file: ./Dockerfile_Development
+          file: ./${{ env.DOCKERFILE }}
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.6
