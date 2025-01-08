@@ -1,0 +1,41 @@
+name: Build and Deploy to Docker on Production Environment
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: khanganonymous/cicd_production:latest
+          file: ./Dockerfile_Production
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            docker pull khanganonymous/cicd_production:latest
+            docker stop cicd_production || true
+            docker rm cicd_production || true
+            docker run -d -p 5024:5024 --name cicd_production khanganonymous/cicd_production:latest
