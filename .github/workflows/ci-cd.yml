@@ -26,9 +26,13 @@ jobs:
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
             echo "Using Dockerfile_Production"
             echo "DOCKERFILE=Dockerfile_Production" >> $GITHUB_ENV
+            echo "PORT=5254" >> $GITHUB_ENV
+            echo "DOCKER_NAME=cicd_production" >> $GITHUB_ENV
           else
             echo "Using Dockerfile_Development"
             echo "DOCKERFILE=Dockerfile_Development" >> $GITHUB_ENV
+            echo "PORT=5253" >> $GITHUB_ENV
+            echo "DOCKER_NAME=cicd_development" >> $GITHUB_ENV
           fi
       
       - name: Build and push
@@ -36,7 +40,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: khanganonymous/cicd_development:latest
+          tags: khanganonymous/${{ DOCKER_NAME }}:latest
           file: ./${{ env.DOCKERFILE }}
 
       - name: Deploy on VPS
@@ -48,7 +52,7 @@ jobs:
           port: 22
           timeout: 300s
           script: |
-            docker pull khanganonymous/cicd_development:latest
-            docker stop cicd_development || true
-            docker rm cicd_development || true
-            docker run -d -p 5253:5253 --name cicd_development khanganonymous/cicd_development:latest
+            docker pull khanganonymous/${{ DOCKER_NAME }}:latest
+            docker stop ${{ DOCKER_NAME }} || true
+            docker rm ${{ DOCKER_NAME }} || true
+            docker run -d -p ${{ env.PORT }}:${{ env.PORT }} --name ${{ DOCKER_NAME }} khanganonymous/${{ DOCKER_NAME }}:latest
